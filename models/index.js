@@ -9,6 +9,4 @@ const User = DefineUser(sequelize, DataTypes)
 
 syncDb(sequelize, { alter: true });
 
-module.exports = {
-    UserModel: require("./User"),
-};
+module.exports = { User };

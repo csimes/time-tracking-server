@@ -8,11 +8,8 @@ const port = 3000;
 
     app.use(require("./middleware/headers"));
     
-    // const userController = require("./controllers/usercontroller");
-    // app.use("/user", userController);
 
     const controllers = require("./controllers")
-
     app.use("/user", controllers.userController);
 
     app.listen(port, () => {

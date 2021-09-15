@@ -6,22 +6,21 @@ const bcrypt = require("bcryptjs");
 
 router.post("/register", async (req, res) => {
     let { firstName, lastName, email, username, password } = req.body;
-    try {
-        const User = await User.create({
-            firstName,
-            lastName,
-            email,
-            username,
-            password: bcrypt.hashSync(password, 13),
-        });
 
+    try {
+			const user = await User.create({
+                firstName,
+                lastName,
+                email,
+                username,
+                password: bcrypt.hashSync(password, 13),
+            });
         let token = jwt.sign({ id: User.id }, process.env.JWT_SECRET, {
             expiresIn: 60 * 60 * 24,
         });
-
         res.status(201).json({
             message: "User has been successfully registered!",
-            user: User,
+            user: user,
             sessionToken: token,
         });
     } catch (err) {
@@ -31,7 +30,7 @@ router.post("/register", async (req, res) => {
             });
         } else {
             res.status(500).json({
-                message: "Failed to register user",
+                message: `Failed to register user. Error: ${err}`,
             });
         }
     }
