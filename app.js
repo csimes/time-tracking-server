@@ -11,6 +11,7 @@ const port = 3000;
     const controllers = require("./controllers")
 
     app.use("/user", controllers.userController);
+    app.use("/employee", controllers.employeeController);
 
     app.listen(port, () => {
         console.log(`[Server]: App is listening at http://localhost:${port}`);

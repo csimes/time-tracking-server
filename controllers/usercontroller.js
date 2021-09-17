@@ -7,8 +7,8 @@ const bcrypt = require("bcryptjs");
 router.post("/register", async (req, res) => {
     try {
 			const user = await User.create({
-        firstName, lastName, email, username, password: req.body,
-        password: bcrypt.hashSync(password, 13),
+        email, password, isAdmin : req.body,
+        password: bcrypt.hashSync(password, 13)
             });
         let token = jwt.sign({ id: User.id }, process.env.JWT_SECRET, {
             expiresIn: "1d",
@@ -25,19 +25,19 @@ router.post("/register", async (req, res) => {
             });
         } else {
             res.status(500).json({
-                message: `Failed to register user. Error: ${err}`,
+                message: `Failed to register user. ${err}`,
             });
         }
     }
 });
 
 router.post("/login", async (req, res) => {
-    let { username, password } = req.body;
+    let { email, password } = req.body;
 
     try {
         const loginUser = await User.findOne({
             where: {
-                username,
+                email,
             },
         });
         if (loginUser) {
