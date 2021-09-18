@@ -16,9 +16,11 @@ const Employee = DefineEmployee(sequelize, DataTypes);
 // const Projects = DefineProjects(sequelize, DataTypes);
 
 /* Associations */
-// Employee.hasOne(User)
-// User.belongsTo(Employee)
+User.hasOne(Employee, {foreignKey: {allowNull: false}})
+Employee.belongsTo(User)
+
 // Company.hasMany(Employee)
+// Employee.belongsTo(Company)
 
 /* Sync */
 syncDb(sequelize, { alter: true });

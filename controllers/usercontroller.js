@@ -5,10 +5,13 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 router.post("/register", async (req, res) => {
+  let {email, password, isAdmin} = req.body;
     try {
+
 			const user = await User.create({
-        email, password, isAdmin : req.body,
-        password: bcrypt.hashSync(password, 13)
+        email,
+        password: bcrypt.hashSync(password, 13),
+        isAdmin
             });
         let token = jwt.sign({ id: User.id }, process.env.JWT_SECRET, {
             expiresIn: "1d",
@@ -25,7 +28,7 @@ router.post("/register", async (req, res) => {
             });
         } else {
             res.status(500).json({
-                message: `Failed to register user. ${err}`,
+                message: `Unable to register user. ${err}`,
             });
         }
     }
@@ -68,9 +71,9 @@ router.post("/login", async (req, res) => {
                 message: "Login failed",
             });
         }
-    } catch (error) {
+    } catch (err) {
         res.status(500).json({
-            message: "Failed to log user in",
+            message: `Unable to log user in ${err}`
         });
     }
 });

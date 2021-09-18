@@ -4,16 +4,17 @@ const app = express();
 const port = 3000;
 
 ;(async () => {
-    app.use(express.json());
+  const controllers = require("./controllers")
 
-    app.use(require("./middleware/headers"));
-    
-    const controllers = require("./controllers")
+  app.use(express.json());
 
-    app.use("/user", controllers.userController);
-    app.use("/employee", controllers.employeeController);
+  app.use(require("./middleware/headers"));
+  
+  app.use("/user", controllers.userController);
+  app.use(require("./middleware/validate-session"));
+  app.use("/employee", controllers.employeeController);
 
-    app.listen(port, () => {
-        console.log(`[Server]: App is listening at http://localhost:${port}`);
-    });
+  app.listen(port, () => {
+      console.log(`[Server]: App is listening at http://localhost:${port}`);
+  });
 })();
