@@ -1,18 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-    const Hours = sequelize.define("Timesheet", {
-        username: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        companyName: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        projectName: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        hours: {
+    const Timesheet = sequelize.define("Timesheet", {
+          hours: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
