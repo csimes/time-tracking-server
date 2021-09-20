@@ -12,11 +12,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        companyName: {
-            type: DataTypes.STRING,
-            allowNull: true,
-            unique: true,
-        },
         department: {
             type: DataTypes.STRING,
             allowNull: true,

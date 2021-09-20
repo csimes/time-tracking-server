@@ -10,7 +10,6 @@ router.post("/", async (req, res) => {
             firstName,
             lastName,
             username,
-            companyName,
             department,
             title,
             hireDate
@@ -29,6 +28,7 @@ router.post("/", async (req, res) => {
     }
 });
 
+/* Get employee profile by UserId */
 router.get("/:id", async (req, res) => {
     const { id } = req.user;
     try {
@@ -79,7 +79,6 @@ router.put("/:id", async (req, res) => {
         res.status(500).json({ message: `Unable to update employee profile. ${err}` });
     }
 });
-
 
 router.delete("/:id", async (req, res) => {
     const { id, isAdmin } = req.user;

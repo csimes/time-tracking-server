@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const Hours = sequelize.define("Hours", {
+    const Hours = sequelize.define("Timesheet", {
         username: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -25,5 +25,5 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false
         }
     });
-    return Hours;
+    return Timesheet;
 };

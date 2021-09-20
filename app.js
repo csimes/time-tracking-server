@@ -13,6 +13,7 @@ const port = 3000;
   app.use("/user", controllers.userController);
   app.use(require("./middleware/validate-session"));
   app.use("/employee", controllers.employeeController);
+  app.use("/company", controllers.companyController);
 
   app.listen(port, () => {
       console.log(`[Server]: App is listening at http://localhost:${port}`);
