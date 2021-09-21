@@ -1,8 +1,8 @@
 const router = require("express").Router();
 const { Employee } = require("../models");
 const { UniqueConstraintError } = require("sequelize/lib/errors");
-router.post("/", async (req, res) => {
-    let { firstName, lastName, username, companyName, department, title, hireDate } = req.body;
+router.post("/create", async (req, res) => {
+    let { firstName, lastName, username, department, title, hireDate, CompanyId } = req.body;
     let { id } = req.user
     try {
         const employee = await Employee.create({
@@ -12,7 +12,8 @@ router.post("/", async (req, res) => {
             username,
             department,
             title,
-            hireDate
+            hireDate,
+            CompanyId
         });
         res.status(200).json({
           message: "Employee profile has been successfully created!",
@@ -43,7 +44,7 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/update/:id", async (req, res) => {
     let {
         firstName,
         lastName,
@@ -52,6 +53,7 @@ router.put("/:id", async (req, res) => {
         department,
         title,
         hireDate,
+        CompanyId
     } = req.body;
     const { id } = req.user;
 
@@ -70,17 +72,18 @@ router.put("/:id", async (req, res) => {
         department: department,
         title: title,
         hireDate: hireDate,
+        CompanyId: CompanyId
     };
 
     try {
         const update = await Employee.update(updatedEmployee, query);
-        res.status(200).json({message: "Employee Profile successfully updated!", updatedEmployee: updatedEmployee});
+        res.status(200).json({message: "Employee profile successfully updated!", updatedEmployee: updatedEmployee});
     } catch (err) {
         res.status(500).json({ message: `Unable to update employee profile. ${err}` });
     }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/remove/:id", async (req, res) => {
     const { id, isAdmin } = req.user;
   if (isAdmin === true) {
 try {
