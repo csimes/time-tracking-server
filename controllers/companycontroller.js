@@ -45,6 +45,16 @@ router.get("/:name", async (req, res) => {
     } 
 });
 
+/* Get all companies */
+router.get("/", async (req, res) => {
+    try {
+        const companies = await Company.findAll();
+        res.status(200).json(companies);
+    } catch (err) {
+        res.status(500).json({ error: err });
+    }
+});
+
 
 router.put("/update/:name", async (req, res) => {
     const company = req.params.name;
