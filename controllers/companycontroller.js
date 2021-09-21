@@ -1,6 +1,7 @@
 const router = require("express").Router();
-const { Company } = require("../models");
+const { Company, Employee } = require("../models");
 const { UniqueConstraintError } = require("sequelize/lib/errors");
+
 router.post("/create", async (req, res) => {
     let { companyName, location } = req.body;
     let { isAdmin } = req.user;
@@ -29,6 +30,23 @@ router.post("/create", async (req, res) => {
 });
 
 /* Get company profile by name */
+
+router.get("/:name", async (req, res) => {
+    const company = req.params.name;
+    try {
+        const companyProfile = await Company.findOne({
+            where: {
+                companyName: company,
+            },
+        });
+
+        res.status(200).json(companyProfile);
+    } catch (err) {
+        res.status(500).json({ message: `Company profile not found. ${err}` });
+    }
+});
+
+/* Get company profile by name & include employees */
 router.get("/:name", async (req, res) => {
   const company = req.params.name;
     try {
@@ -36,6 +54,7 @@ router.get("/:name", async (req, res) => {
             where: {
                 companyName: company,
             },
+            include: Employee
         });
 
 
@@ -51,9 +70,21 @@ router.get("/", async (req, res) => {
         const companies = await Company.findAll();
         res.status(200).json(companies);
     } catch (err) {
-        res.status(500).json({ error: err });
+        res.status(500).json({ message: `Unable to retrieve company list. ${err}` });
     }
 });
+
+router.get("/employeelist", async (req, res) => {
+
+  try {
+    const companyEmployees = await Company.findByPk(2)
+    res.status(200).json(companyEmployees)
+  } catch(err) {
+    res.status(500).json({
+        message: `Unable to retrieve company employee list. ${err}`,
+    });
+  }
+})
 
 
 router.put("/update/:name", async (req, res) => {

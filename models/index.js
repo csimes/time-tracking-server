@@ -34,5 +34,4 @@ Projects.belongsTo(Company)
 /* Sync */
 syncDb(sequelize, { alter: true });
 
-module.exports = { User, Employee, Company, Timesheet, Projects 
-};
+module.exports = { User, Employee, Company, Timesheet, Projects };
