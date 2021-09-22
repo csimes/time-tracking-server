@@ -47,7 +47,7 @@ router.get("/:name", async (req, res) => {
 });
 
 /* Get company profile by name & include employees */
-router.get("/:name", async (req, res) => {
+router.get("/:name/employees", async (req, res) => {
   const company = req.params.name;
     try {
         const companyProfile = await Company.findOne({

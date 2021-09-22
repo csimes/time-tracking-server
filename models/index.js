@@ -31,6 +31,9 @@ Timesheet.belongsTo(Projects)
 Company.hasMany(Projects)
 Projects.belongsTo(Company)
 
+Company.hasMany(Timesheet);
+Timesheet.belongsTo(Company);
+
 /* Sync */
 syncDb(sequelize, { alter: true });
 

@@ -29,13 +29,14 @@ router.post("/create", async (req, res) => {
     }
 });
 
-/* Get employee profile by UserId */
+    
+/* Get employee profile by Employee Id */
 router.get("/:id", async (req, res) => {
-    const { id } = req.user;
+    const { id } = req.params;
     try {
-        const employeeProfile = await Employee.findAll({
+        const employeeProfile = await Employee.findOne({
             where: {
-                UserId: id,
+                id: id,
             },
         });
         res.status(200).json(employeeProfile);
@@ -49,7 +50,6 @@ router.put("/update/:id", async (req, res) => {
         firstName,
         lastName,
         username,
-        // companyName,
         department,
         title,
         hireDate,
@@ -68,7 +68,6 @@ router.put("/update/:id", async (req, res) => {
         firstName: firstName,
         lastName: lastName,
         username: username,
-        // companyName: companyName,
         department: department,
         title: title,
         hireDate: hireDate,
@@ -93,9 +92,9 @@ try {
             },
         };
         await Employee.destroy(deletedEmployee);
-        res.status(200).json({ message: "Employee profile successfully removed" });
+        res.status(200).json({ message: "Employee profile successfully removed." });
     } catch (err) {
-        res.status(500).json({ message: `Unable to remove employee profile ${err}` });
+        res.status(500).json({ message: `Unable to remove employee profile. ${err}` });
     }
 
   } else if (isAdmin === false ) {
