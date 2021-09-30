@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const port = 3000;
+
 
 ;(async () => {
   const controllers = require("./controllers")
@@ -17,7 +17,7 @@ const port = 3000;
   app.use("/timesheet", controllers.timesheetController);
   app.use("/project", controllers.projectsController);
 
-  app.listen(port, () => {
-      console.log(`[Server]: App is listening at http://localhost:${port}`);
+  app.listen(process.env.PORT, () => {
+      console.log(`[Server]: App is listening at http://${process.env.DB_HOST}:${process.env.PORT}`);
   });
 })();
