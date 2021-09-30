@@ -18,6 +18,6 @@ const app = express();
   app.use("/project", controllers.projectsController);
 
   app.listen(process.env.PORT, () => {
-      console.log(`[Server]: App is listening at http://${process.env.DB_HOST}:${process.env.PORT}`);
+      console.log(`[Server]: App is listening at port ${process.env.PORT}`);
   });
 })();
