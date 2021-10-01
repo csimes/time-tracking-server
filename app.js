@@ -4,12 +4,10 @@ const app = express();
 
 
 ;(async () => {
+  app.use(require("./middleware/headers"));
   const controllers = require("./controllers")
-  app.use(cors());
   app.use(express.json());
 
-  app.use(require("./middleware/headers"));
-  
   app.use("/user", controllers.userController);
   app.use(require("./middleware/validate-session"));
   app.use("/employee", controllers.employeeController);
