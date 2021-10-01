@@ -1,4 +1,6 @@
+require("dotenv").config();
 const { Sequelize } = require("sequelize");
+
 const { options } = require("./controllers/userController");
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
