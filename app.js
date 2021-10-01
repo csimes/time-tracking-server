@@ -5,7 +5,7 @@ const app = express();
 
 ;(async () => {
   const controllers = require("./controllers")
-
+  app.use(cors());
   app.use(express.json());
 
   app.use(require("./middleware/headers"));
