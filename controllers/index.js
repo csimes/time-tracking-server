@@ -1,7 +1,7 @@
 module.exports = {
-    userController: require("./userController"),
-    employeeController: require("./employeeController"),
-    companyController: require("./companyController"),
-    timesheetController: require("./timesheetController"),
-    projectsController: require("./projectsController"),
+    userController: require("./usercontroller"),
+    employeeController: require("./employeecontroller"),
+    companyController: require("./companycontroller"),
+    timesheetController: require("./timesheetcontroller"),
+    projectsController: require("./projectscontroller"),
 };
