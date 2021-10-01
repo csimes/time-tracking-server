@@ -1,8 +1,8 @@
-const userController = require("./userController");
-const employeeController = require("./employeeController");
-const companyController = require("./companyController");
-const timesheetController = require("./timesheetController");
-const projectsController = require("./projectsController");
+const userController = require("./usercontroller");
+const employeeController = require("./employeecontroller");
+const companyController = require("./companycontroller");
+const timesheetController = require("./timesheetcontroller");
+const projectsController = require("./projectscontroller");
 
 
 module.exports = {
