@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { Timesheet } = require("../models");
 
-router.post("/new/:company/:employee", async (req, res) => {
+router.post("/new", async (req, res) => {
   let { hours, timeType, date } = req.body;
   const { employee, company, project } = req.params;
 
