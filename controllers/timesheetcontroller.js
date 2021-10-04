@@ -53,16 +53,16 @@ router.put("/update/:id", async (req, res) => {
     }
 });
 
-/* Get all timesheets by EmployeeId */
-router.get("/byemployee/:id", async (req, res) => {
+/* Get all timesheets for logged in employee */
+router.get("/:id", async (req, res) => {
   const { id } = req.params
     try {
       const employeeTimesheets = await Timesheet.findAll({
         where: {
-          EmployeeId: id
+          EmployeeId : id
         },
       });
-      res.status(200).json(employeeTimesheets);
+      res.status(200).json({employeeTimesheets: employeeTimesheets});
     } catch (err) {
       res.status(500).json({ message: `Employee timesheets not found. ${err}` });
     }

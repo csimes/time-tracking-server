@@ -38,27 +38,11 @@ router.get("/", async (req, res) => {
                 UserId: id,
             },
         });
-        res.status(200).json(employeeProfile);
+        res.status(200).json({employeeProfile: employeeProfile});
     } catch (err) {
         res.status(500).json({ message: `Employee profile not found. ${err}` });
     }
 });
-
-    
-// /* Get employee profile by Employee Id */
-// router.get("/:id", async (req, res) => {
-//     const { id } = req.params;
-//     try {
-//         const employeeProfile = await Employee.findOne({
-//             where: {
-//                 id: id,
-//             },
-//         });
-//         res.status(200).json(employeeProfile);
-//     } catch (err) {
-//         res.status(500).json({message: `Employee profile not found. ${err}`});
-//     }
-// });
 
 router.put("/update/:id", async (req, res) => {
     let {
