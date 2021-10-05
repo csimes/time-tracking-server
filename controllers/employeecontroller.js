@@ -54,16 +54,16 @@ router.put("/update/:id", async (req, res) => {
         hireDate,
         CompanyId
     } = req.body;
-    const { id } = req.user;
+    const { id } = req.params;
 
     const query = {
         where: {
-            UserId: id,
+            id : id,
         },
     };
 
     const updatedEmployee = {
-        UserId: id,
+        EmployeeId: id,
         firstName: firstName,
         lastName: lastName,
         username: username,
