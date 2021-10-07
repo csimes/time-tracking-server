@@ -70,16 +70,25 @@ router.get("/:id", async (req, res) => {
 
 /* Get all timesheets by CompanyId */
 router.get("/bycompany/:id", async (req, res) => {
+  const { isAdmin } = req.user;
   const { id } = req.params
-    try {
-      const employeeTimesheets = await Timesheet.findAll({
-        where: {
-          CompanyId: id
-        },
-      });
-      res.status(200).json(employeeTimesheets);
-    } catch (err) {
-      res.status(500).json({ message: `Employee timesheets not found. ${err}` });
+    if (isAdmin === true) {
+        try {
+            const employeeTimesheets = await Timesheet.findAll({
+                where: {
+                    CompanyId: id,
+                },
+            });
+            res.status(200).json(employeeTimesheets);
+        } catch (err) {
+            res.status(500).json({
+                message: `Employee timesheets not found. ${err}`,
+            });
+        }
+    } else if (isAdmin === false) {
+        res.status(500).json({
+            message: `Unable to remove employee profile - Administrator access required`,
+        });
     }
 });
 
