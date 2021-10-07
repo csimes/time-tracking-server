@@ -1,15 +1,8 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const cors = require("cors");
 ;(async () => {
   app.use(require("./middleware/headers"));
-  app.use(
-      cors({
-          origin: "https://cs-timetrackerclient.herokuapp.com",
-          credentials: true,
-      })
-  ); 
   const controllers = require("./controllers")
   app.use(express.json());
 
