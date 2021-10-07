@@ -1,9 +1,11 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
+import cors from "cors";
 
 ;(async () => {
   app.use(require("./middleware/headers"));
+  app.use(cors()); 
   const controllers = require("./controllers")
   app.use(express.json());
 
