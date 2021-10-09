@@ -48,7 +48,7 @@ router.get("/", async (req, res) => {
 /* Get all employees in company */
 router.get("/bycompany/:id", async (req, res) => {
   const { isAdmin } = req.user;
-  const { id }
+  const { id } = req.params;
   if (isAdmin === true) {
       try {
           const employees = await Employee.findAll({

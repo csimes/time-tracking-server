@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 ;(async () => {
+  // Add headers before the routes are defined
     app.use(require("./middleware/headers"));
     const controllers = require("./controllers");
     app.use(express.json());
@@ -12,9 +13,8 @@ const app = express();
     app.use("/company", controllers.companyController);
     app.use("/timesheet", controllers.timesheetController);
     app.use("/project", controllers.projectsController);
-    // Add headers before the routes are defined
 
     app.listen(process.env.PORT, () => {
-        console.log(`[Server]: App is listening at port ${process.env.PORT}`);
+        console.log(`[Server]: App is listening at port: ${process.env.PORT}`);
     });
 })();
