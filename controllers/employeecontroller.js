@@ -44,6 +44,31 @@ router.get("/", async (req, res) => {
     }
 });
 
+
+/* Get all employees in company */
+router.get("/bycompany/:id", async (req, res) => {
+  const { isAdmin } = req.user;
+  const { id }
+  if (isAdmin === true) {
+      try {
+          const employees = await Employee.findAll({
+              where: {
+                  CompanyId: id,
+              },
+          });
+          res.status(200).json({ employees: employees });
+      } catch (err) {
+          res.status(500).json({
+              message: `Employee profile not found. ${err}`,
+          });
+      }
+  } else if (isAdmin === false) {
+      res.status(500).json({
+          message: `Unable to remove employee profile - Administrator access required`,
+      });
+  }
+});
+
 router.put("/update/:id", async (req, res) => {
     let {
         firstName,
