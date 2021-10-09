@@ -107,12 +107,13 @@ router.put("/update/:id", async (req, res) => {
 });
 
 router.delete("/remove/:id", async (req, res) => {
-    const { id, isAdmin } = req.user;
+    const { isAdmin } = req.user;
+    const { id } = req.params;
   if (isAdmin === true) {
 try {
         const deletedEmployee = {
             where: {
-                UserId: id
+                id: id
             },
         };
         await Employee.destroy(deletedEmployee);
