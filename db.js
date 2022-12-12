@@ -20,10 +20,9 @@ const { Sequelize } = require("sequelize");
 //       }
 // );
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  host: !localhost,
+const sequelize = new Sequelize(`${process.env.DATABASE_URL}?ssl=true`, {
+  host: process.env.HOST != "localhost",
   dialect: "postgres",
-  ssl: true,
 });
 
 async function syncDb(sequelize, options) {
