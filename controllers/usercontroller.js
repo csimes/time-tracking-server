@@ -6,8 +6,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 router.post("/register", async (req, res) => {
+  const { email, password, isAdmin } = req.body;
   try {
-    const { email, password, isAdmin } = req.body;
     encryptedPassword = await bcrypt.hash(password, 13);
 
     const user = await User.create({
@@ -21,7 +21,7 @@ router.post("/register", async (req, res) => {
 
     user.token = token;
 
-    res.status(201).json({
+    res.status(200).json({
       message: "User has been successfully registered!",
       user: user,
       sessionToken: token,
@@ -46,13 +46,8 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
   try {
-    const { email, password } = req.body;
-
-    if (!(email && password)) {
-      res.status(400).send("All input is required");
-    }
-
     const loginUser = await User.findOne({
       where: {
         email,
@@ -78,17 +73,20 @@ router.post("/login", async (req, res) => {
         message: "User successfully logged in!",
         sessionToken: token,
       });
-      {
-        res.status(400).json({
-          message: "Incorrect email or password",
-        });
-      }
+      
     } else {
       res.status(401).json({
         message: "Login failed",
       });
     }
   } catch (err) {
+    if (!(email && password)) {
+      res.status(400).send("All input is required");
+    }
+    res.status(401).json({
+      message: "Incorrect email or password",
+    });
+  
     res.status(500).json({
       message: `Unable to log user in. ${err}`,
     });
