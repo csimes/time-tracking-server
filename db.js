@@ -21,10 +21,16 @@ const { Sequelize } = require("sequelize");
 //       }
 // );
 
-const sequelize = new Sequelize(connString, {
-  dialect: "postgres",
-});
-
+const sequelize = new Sequelize(
+  process.env.DB,
+  process.env.DB_USER,
+  process.env.DB_PASS,
+  {
+    host: "localhost",
+    dialect: "postgres",
+  }
+  
+);
 async function syncDb(sequelize, options) {
   const { force, alter } = options;
   try {
