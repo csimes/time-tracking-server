@@ -5,7 +5,7 @@ const { Sequelize } = require("sequelize");
 //   /* ssl=true must be appended to database url to prevent error stating ssl/tls is required */
 //   process.env.DATABASE_URL,
 //   process.env.HOST != "localhost"
-//     ? {
+// ? {
 //         dialect: "postgres",
 
 //         dialectOptions: {
@@ -20,7 +20,9 @@ const { Sequelize } = require("sequelize");
 //       }
 // );
 
-const sequelize = new Sequelize(process.env.DATABASE_URL);
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: "postgres",
+});
 
 async function syncDb(sequelize, options) {
   const { force, alter } = options;
