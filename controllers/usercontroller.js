@@ -31,7 +31,7 @@ router.post("/register", async (req, res) => {
       res.status(400).send("All input is required");
     }
 
-    const oldUser = await User.findOne({ email });
+    const oldUser = await User.findOne({ where: { email } });
 
     if (oldUser) {
       res.status(409).json({
@@ -73,7 +73,6 @@ router.post("/login", async (req, res) => {
         message: "User successfully logged in!",
         sessionToken: token,
       });
-      
     } else {
       res.status(401).json({
         message: "Login failed",
@@ -86,7 +85,7 @@ router.post("/login", async (req, res) => {
     res.status(401).json({
       message: "Incorrect email or password",
     });
-  
+
     res.status(500).json({
       message: `Unable to log user in. ${err}`,
     });
