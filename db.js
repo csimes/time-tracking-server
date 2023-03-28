@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { Sequelize } = require("sequelize");
+const { Sequelize } = require("sequelize-cockroachdb");
 
 const sequelize = new Sequelize(
   /* ssl=true must be appended to database url to prevent error stating ssl/tls is required */
@@ -11,7 +11,7 @@ const sequelize = new Sequelize(
         dialectOptions: {
           ssl: {
             require: true,
-            rejectUnauthorized: false,
+            rejectUnauthorized: true,
           },
         },
       }
