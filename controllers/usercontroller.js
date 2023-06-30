@@ -9,12 +9,20 @@ router.post("/register", async (req, res) => {
   const { email, password, isAdmin } = req.body;
   try {
     encryptedPassword = await bcrypt.hash(password, 13);
-
-    const user = await User.create({
-      email: email.toLowerCase(), // sanitize: convert email to lowercase
-      password: encryptedPassword,
-      isAdmin,
+    const response = await fetch(`${process.env.SUPABASE_URL}/rest/v1/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": process.env.SUPABASE_API_KEY,
+      },
+      body: JSON.stringify({
+        email: email.toLowerCase(),
+        password: encryptedPassword,
+        is_admin: isAdmin,
+      }),
     });
+    const user = await response.json();
+
     const token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET, {
       expiresIn: "2h",
     });
