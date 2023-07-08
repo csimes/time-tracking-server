@@ -1,21 +1,27 @@
-module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define("User", {
-    email: {
-      type: DataTypes.CHAR(100),
-      allowNull: false,
-      unique: true,
+module.exports = (sequelize, DataTypes, user_profiles) => {
+  const User = sequelize.define(
+    "User",
+    {
+      email: {
+        type: DataTypes.CHAR(100),
+        allowNull: false,
+        unique: true,
+      },
+      password: {
+        type: DataTypes.CHAR(100),
+        allowNull: false,
+      },
+      token: {
+        type: DataTypes.CHAR(100),
+      },
+      isAdmin: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
     },
-    password: {
-      type: DataTypes.CHAR(100),
-      allowNull: false,
-    },
-    token: {
-      type: DataTypes.CHAR(100),
-    },
-    isAdmin: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
-  });
+    {
+      tableName: user_profiles,
+    }
+  );
   return User;
 };

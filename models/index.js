@@ -2,34 +2,34 @@ const { sequelize, syncDb } = require("../db");
 const { DataTypes } = require("sequelize");
 
 /* Model Functions */
-const DefineUser = require('./User')
+const DefineUser = require("./User");
 const DefineEmployee = require("./Employee");
 const DefineCompany = require("./Company");
 const DefineTimesheet = require("./Timesheet");
 const DefineProjects = require("./Projects");
 
 /* Model Definitions */
-const User = DefineUser(sequelize, DataTypes)
-const Employee = DefineEmployee(sequelize, DataTypes);
-const Company = DefineCompany(sequelize, DataTypes);
-const Timesheet = DefineTimesheet(sequelize, DataTypes);
-const Projects = DefineProjects(sequelize, DataTypes);
+const User = DefineUser(sequelize, DataTypes, "user_profiles");
+const Employee = DefineEmployee(sequelize, DataTypes, "employee_profiles");
+const Company = DefineCompany(sequelize, DataTypes, "companies");
+const Timesheet = DefineTimesheet(sequelize, DataTypes, "timesheets");
+const Projects = DefineProjects(sequelize, DataTypes, "projects");
 
 /* Associations */
-User.hasOne(Employee, { foreignKey: { allowNull: false } })
-Employee.belongsTo(User)
+User.hasOne(Employee, { foreignKey: { allowNull: false } });
+Employee.belongsTo(User);
 
-Employee.belongsTo(Company)
-Company.hasMany(Employee)
+Employee.belongsTo(Company);
+Company.hasMany(Employee);
 
-Employee.hasMany(Timesheet)
-Timesheet.belongsTo(Employee)
+Employee.hasMany(Timesheet);
+Timesheet.belongsTo(Employee);
 
-Projects.hasMany(Timesheet)
-Timesheet.belongsTo(Projects)
+Projects.hasMany(Timesheet);
+Timesheet.belongsTo(Projects);
 
-Company.hasMany(Projects)
-Projects.belongsTo(Company)
+Company.hasMany(Projects);
+Projects.belongsTo(Company);
 
 Company.hasMany(Timesheet);
 Timesheet.belongsTo(Company);
