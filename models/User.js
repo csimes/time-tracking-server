@@ -3,16 +3,17 @@ module.exports = (sequelize, DataTypes, user_profiles) => {
     "User",
     {
       email: {
-        type: DataTypes.CHAR(100),
+        type: DataTypes.TEXT,
         allowNull: false,
         unique: true,
       },
       password: {
-        type: DataTypes.CHAR(100),
+        type: DataTypes.TEXT,
         allowNull: false,
       },
       token: {
-        type: DataTypes.CHAR(100),
+        type: DataTypes.TEXT,
+        // allowNull: false,
       },
       isAdmin: {
         type: DataTypes.BOOLEAN,
