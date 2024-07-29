@@ -1,42 +1,45 @@
 require("dotenv").config();
-const router = require("express").Router();
-const { User } = require("../models");
-const { UniqueConstraintError } = require("sequelize/lib/errors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const fetch = require("node-fetch");
+const router = require("express").Router();
+const { User } = require("../models");
+// const { UniqueConstraintError } = require("sequelize/lib/errors");
 
 router.post("/register", async (req, res) => {
   const { email, password, isAdmin } = req.body;
+  console.log("Email before conversion:", email);
+  const lowercaseEmail = email.toLowerCase();
+  console.log("Email after conversion:", lowercaseEmail);
   try {
-    encryptedPassword = await bcrypt.hash(password, 13);
-    const response = await fetch(`${process.env.SUPABASE_URL}/rest/v1/users`, {
+    const encryptedPassword = await bcrypt.hash(password, 13);
+    const response = await fetch(`${process.env.SUPABASE_URL}/user_profiles`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "apikey": process.env.SUPABASE_API_KEY,
+        apikey: process.env.SUPABASE_API_KEY,
       },
       body: JSON.stringify({
-        email: email.toLowerCase(),
-        password: encryptedPassword,
-        is_admin: isAdmin,
+        lowercaseEmail,
+        encryptedPassword,
+        isAdmin,
       }),
+    });
+    let token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET, {
+      expiresIn: "2h",
     });
     const user = await response.json();
 
-    const token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET, {
-      expiresIn: "2h",
-    });
-
     user.token = token;
 
-    res.status(200).json({
+    res.status(201).json({
       message: "User has been successfully registered!",
       user: user,
       sessionToken: token,
     });
   } catch (err) {
-    if (!(email && password)) {
-      res.status(400).send("All input is required");
+    if (!email || !password) {
+      res.status(400).send("Email and password are required");
     }
 
     const oldUser = await User.findOne({ where: { email } });
