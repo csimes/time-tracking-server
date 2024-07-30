@@ -9,26 +9,18 @@ const { User } = require("../models");
 router.post("/register", async (req, res) => {
   const { email, password, isAdmin } = req.body;
   console.log("Email before conversion:", email);
-  const lowercaseEmail = email.toLowerCase();
+  const lowercaseEmail = email.toLowerCase(); // sanitize: convert email to lowercase
   console.log("Email after conversion:", lowercaseEmail);
   try {
     const encryptedPassword = await bcrypt.hash(password, 13);
-    const response = await fetch(`${process.env.SUPABASE_URL}/user_profiles`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: process.env.SUPABASE_API_KEY,
-      },
-      body: JSON.stringify({
-        lowercaseEmail,
-        encryptedPassword,
-        isAdmin,
-      }),
+    const user = await User.create({
+      email: lowercaseEmail,
+      password: encryptedPassword,
+      isAdmin,
     });
-    let token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET, {
       expiresIn: "2h",
     });
-    const user = await response.json();
 
     user.token = token;
 
