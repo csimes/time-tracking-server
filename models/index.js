@@ -6,14 +6,14 @@ const DefineUser = require("./User");
 const DefineEmployee = require("./Employee");
 const DefineCompany = require("./Company");
 const DefineTimesheet = require("./Timesheet");
-const DefineProjects = require("./Project");
+const Defineproject = require("./Project");
 
 /* Model Definitions */
 const User = DefineUser(sequelize, DataTypes, "user_profiles");
 const Employee = DefineEmployee(sequelize, DataTypes, "employee_profiles");
 const Company = DefineCompany(sequelize, DataTypes, "companies");
 const Timesheet = DefineTimesheet(sequelize, DataTypes, "timesheets");
-const Project = DefineProjects(sequelize, DataTypes, "project");
+const Project = Defineproject(sequelize, DataTypes, "project");
 
 /* Associations */
 User.hasOne(Employee, { foreignKey: { allowNull: false } });
