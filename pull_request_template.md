@@ -5,7 +5,7 @@
 - [ ] 📝 Documentation Update
 - [ ] 🎨 Style
 - [ ] 👩🏾‍💻 Code Refactor
-- [ ] 🐇 Performance Improvements
+- [ ] 🐇 Performance Improvments
 - [ ] 🧪 Test
 - [ ] 🧱 Build
 - [ ] 🔁 CI
