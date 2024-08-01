@@ -1,4 +1,4 @@
-module.exports = (sequelize, DataTypes, timesheets) => {
+module.exports = (sequelize, DataTypes) => {
   const Timesheet = sequelize.define(
     "Timesheet",
     {
@@ -15,9 +15,6 @@ module.exports = (sequelize, DataTypes, timesheets) => {
         allowNull: false,
       },
     },
-    {
-      tableName: timesheets,
-    }
   );
   return Timesheet;
 };

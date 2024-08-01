@@ -1,4 +1,4 @@
-module.exports = (sequelize, DataTypes, employee_profiles) => {
+module.exports = (sequelize, DataTypes) => {
   const Employee = sequelize.define(
     "Employee",
     {
@@ -28,9 +28,6 @@ module.exports = (sequelize, DataTypes, employee_profiles) => {
         allowNull: true,
       },
     },
-    {
-      tableName: employee_profiles,
-    }
   );
   return Employee;
 };
