@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "jest",
-    "start": "node app.js",
+    "test": "SET NODE_ENV=test & jest",
+    "start": "SET NODE_ENV=development & node app.js",
     "dev": "nodemon"
   },
   "author": "Cherron Simes",

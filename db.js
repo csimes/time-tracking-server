@@ -1,45 +1,54 @@
 require("dotenv").config();
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize(
-  /* ssl=true must be appended to database url to prevent error stating ssl/tls is required */
-  process.env.DATABASE_URL,
-  process.env.HOST != "localhost"
-    ? {
-        dialect: "postgres",
-
-        dialectOptions: {
+function getDbConfig(url) {
+  const isProduction = process.env.NODE_ENV === "production";
+  return {
+    dialect: "postgres",
+    dialectOptions: isProduction
+      ? {
           ssl: {
             require: true,
-            rejectUnauthorized: true,
+            rejectUnauthorized: false,
           },
-        },
-      }
-    : {
-        dialect: "postgres",
-      }
-);
-// const sequelize = new Sequelize(
-//   process.env.DB,
-//   process.env.DB_USER,
-//   process.env.DB_PASS,
-//   {
-//     host: process.env.HOST,
-//     dialect: 'postgres',
-//   }
-// );
-async function syncDb(sequelize, options) {
+        }
+      : {},
+  };
+}
+
+function createSequelizeInstance() {
+  const isTest = process.env.NODE_ENV === "test";
+  const dbUrl = isTest
+    ? process.env.TEST_DATABASE_URL
+    : process.env.DATABASE_URL;
+
+  if (!dbUrl) {
+    throw new Error(
+      `Database URL not found for ${
+        isTest ? "test" : "development"
+      } environment`
+    );
+  }
+
+  return new Sequelize(dbUrl, getDbConfig(dbUrl));
+}
+
+const sequelize = createSequelizeInstance();
+
+async function syncDb(options = {}) {
   const { force, alter } = options;
   try {
     if (force) await sequelize.sync({ force: true });
     else if (alter) await sequelize.sync({ alter: true });
     else await sequelize.sync();
+    console.log("Database synchronized successfully");
   } catch (err) {
-    console.log(err);
+    console.error("Failed to synchronize database:", err);
   }
 }
 
 module.exports = {
   sequelize,
   syncDb,
+  createSequelizeInstance, // Exporting for testing purposes
 };
