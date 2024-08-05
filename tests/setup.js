@@ -1,14 +1,17 @@
-// __tests__/User.test.js
-const { query } = require("./setup");
+const { sequelize } = require("../models"); // Adjust path as needed
+const { createSequelizeInstance, syncDb } = require("../db");
 
-describe("User Model Tests", () => {
-  it("should create a project", async () => {
-    // Test user creation
-  });
+async function setupTestDatabase() {
+  const sequelize = createSequelizeInstance();
+  await syncDb({ force: true }); // this will recreate all tables
+  return sequelize;
+}
 
-  it("should retrieve a user", async () => {
-    // Test user retrieval
-  });
+async function teardownTestDatabase() {
+  await sequelize.close();
+}
 
-  // More user-specific tests...
-});
+module.exports = {
+  setupTestDatabase,
+  teardownTestDatabase,
+};
