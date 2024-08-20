@@ -97,4 +97,7 @@ const login = async (req, res) => {
 router.post("/register", register);
 router.post("/login", login);
 
-module.exports = { router, register, login };
+module.exports = router;
+module.exports.register = register;
+module.exports.login = login;
+
