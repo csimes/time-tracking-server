@@ -6,7 +6,7 @@ router.post("/new/:company", async (req, res) => {
   const { company } = req.params;
 
   try {
-    const project = await project.create({
+    const project = await Project.create({
       projectName,
       totalHours,
       CompanyId: company,
@@ -36,7 +36,7 @@ router.put("/update/:id", async (req, res) => {
     totalHours,
   };
   try {
-    const update = await project.update(updatedProject, query);
+    const update = await Project.update(updatedProject, query);
     res.status(200).json({
       message: "Project successfully updated!",
       updatedProject: updatedProject,
@@ -73,7 +73,7 @@ router.delete("/remove/:id", async (req, res) => {
         id: id,
       },
     };
-    await project.destroy(deletedProject);
+    await Project.destroy(deletedProject);
     res.status(200).json({
       message: "Project successfully removed.",
     });
