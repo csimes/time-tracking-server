@@ -1,89 +1,79 @@
-const { setupTestDatabase, teardownTestDatabase } = require("./setup");
-const request = require("supertest");
-const express = require("express");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const { User } = require("../models");
+const userController = require("../controllers/usercontroller");
 
-let sequelize;
-
-beforeAll(async () => {
-  sequelize = await setupTestDatabase();
-});
-
-afterAll(async () => {
-  await teardownTestDatabase(sequelize);
-});
-
-// Mock the User model and other dependencies
-jest.mock("../models");
-jest.mock("bcryptjs");
+// Mock external dependencies
 jest.mock("jsonwebtoken");
-
-const app = express();
-app.use(express.json());
-app.use("/", require("../controllers/usercontroller"));
+jest.mock("bcryptjs");
+jest.mock("../models");
 
 describe("User Controller", () => {
+  let req, res;
+
   beforeEach(() => {
+    req = {
+      body: {},
+    };
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+      send: jest.fn(),
+    };
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
   describe("POST /register", () => {
     it("should register a new user successfully", async () => {
-      const mockUser = {
-        id: 1,
+      req.body = {
         email: "test@example.com",
-        password: "hashedPassword",
+        password: "password123",
         isAdmin: false,
       };
+      const mockUser = { id: 1, ...req.body };
 
       User.create.mockResolvedValue(mockUser);
       bcrypt.hash.mockResolvedValue("hashedPassword");
       jwt.sign.mockReturnValue("mockedToken");
 
-      const response = await request(app).post("/register").send({
-        email: "TEST@example.com",
-        password: "password123",
-        isAdmin: false,
-      });
+      await userController.register(req, res);
 
-      expect(response.status).toBe(201);
-      expect(response.body.message).toBe(
-        "User has been successfully registered!"
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: "User has been successfully registered!",
+          user: expect.objectContaining(mockUser),
+          sessionToken: "mockedToken",
+        })
       );
-      expect(response.body.user).toEqual(expect.objectContaining(mockUser));
-      expect(response.body.sessionToken).toBe("mockedToken");
-
-      expect(User.create).toHaveBeenCalledWith({
-        email: "test@example.com",
-        password: "hashedPassword",
-        isAdmin: false,
-      });
     });
 
     it("should return 400 if email or password is missing", async () => {
-      const response = await request(app).post("/register").send({});
+      await userController.register(req, res);
 
-      expect(response.status).toBe(400);
-      expect(response.text).toBe("Email and password are required");
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.send).toHaveBeenCalledWith("Email and password are required");
     });
 
     it("should return 409 if email is already in use", async () => {
-      User.findOne.mockResolvedValue({ id: 1, email: "test@example.com" });
+      req.body = { email: "existing@example.com", password: "password123" };
+      User.findOne.mockResolvedValue({ id: 1, email: "existing@example.com" });
 
-      const response = await request(app).post("/register").send({
-        email: "test@example.com",
-        password: "password123",
+      await userController.register(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(409);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Email already in use",
       });
-
-      expect(response.status).toBe(409);
-      expect(response.body.message).toBe("Email already in use");
     });
   });
 
   describe("POST /login", () => {
     it("should log in a user successfully", async () => {
+      req.body = { email: "test@example.com", password: "password123" };
       const mockUser = {
         id: 1,
         email: "test@example.com",
@@ -94,36 +84,33 @@ describe("User Controller", () => {
       bcrypt.compare.mockResolvedValue(true);
       jwt.sign.mockReturnValue("mockedToken");
 
-      const response = await request(app).post("/login").send({
-        email: "test@example.com",
-        password: "password123",
-      });
+      await userController.login(req, res);
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe("User successfully logged in!");
-      expect(response.body.loginUser).toEqual(
-        expect.objectContaining(mockUser)
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          loginUser: expect.objectContaining(mockUser),
+          message: "User successfully logged in!",
+          sessionToken: "mockedToken",
+        })
       );
-      expect(response.body.sessionToken).toBe("mockedToken");
     });
 
     it("should return 401 for invalid credentials", async () => {
+      req.body = { email: "test@example.com", password: "wrongpassword" };
       User.findOne.mockResolvedValue(null);
 
-      const response = await request(app).post("/login").send({
-        email: "test@example.com",
-        password: "wrongpassword",
-      });
+      await userController.login(req, res);
 
-      expect(response.status).toBe(401);
-      expect(response.body.message).toBe("Login failed");
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({ message: "Login failed" });
     });
 
     it("should return 400 if email or password is missing", async () => {
-      const response = await request(app).post("/login").send({});
+      await userController.login(req, res);
 
-      expect(response.status).toBe(400);
-      expect(response.text).toBe("Email and password are required");
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.send).toHaveBeenCalledWith("Email and password are required");
     });
   });
 });

@@ -5,7 +5,7 @@ const fetch = require("node-fetch");
 const router = require("express").Router();
 const { User } = require("../models");
 
-router.post("/register", async (req, res) => {
+const register = async (req, res) => {
   const { email, password, isAdmin } = req.body;
 
   if (!email || !password) {
@@ -50,9 +50,9 @@ router.post("/register", async (req, res) => {
       message: `Unable to register user. ${err}`,
     });
   }
-});
+};
 
-router.post("/login", async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -92,6 +92,9 @@ router.post("/login", async (req, res) => {
       message: `Unable to log user in. ${err}`,
     });
   }
-});
+};
 
-module.exports = router;
+router.post("/register", register);
+router.post("/login", login);
+
+module.exports = { router, register, login };
