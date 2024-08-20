@@ -4,23 +4,39 @@ const bcrypt = require("bcryptjs");
 const fetch = require("node-fetch");
 const router = require("express").Router();
 const { User } = require("../models");
-// const { UniqueConstraintError } = require("sequelize/lib/errors");
 
-router.post("/register", async (req, res) => {
+const register = async (req, res) => {
   const { email, password, isAdmin } = req.body;
-  console.log("Email before conversion:", email);
-  const lowercaseEmail = email.toLowerCase(); // sanitize: convert email to lowercase
-  console.log("Email after conversion:", lowercaseEmail);
+
+  if (!email || !password) {
+    return res.status(400).send("Email and password are required");
+  }
+
+  const lowercaseEmail = email.toLowerCase();
+
   try {
+    const oldUser = await User.findOne({ where: { email: lowercaseEmail } });
+
+    if (oldUser) {
+      return res.status(409).json({
+        message: "Email already in use",
+      });
+    }
+
     const encryptedPassword = await bcrypt.hash(password, 13);
     const user = await User.create({
       email: lowercaseEmail,
       password: encryptedPassword,
       isAdmin,
     });
-    const token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET, {
-      expiresIn: "2h",
-    });
+
+    const token = jwt.sign(
+      { id: user.id, email: lowercaseEmail },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "2h",
+      }
+    );
 
     user.token = token;
 
@@ -30,45 +46,35 @@ router.post("/register", async (req, res) => {
       sessionToken: token,
     });
   } catch (err) {
-    if (!email || !password) {
-      res.status(400).send("Email and password are required");
-    }
-
-    const oldUser = await User.findOne({ where: { email } });
-
-    if (oldUser) {
-      res.status(409).json({
-        message: "Email already in use",
-      });
-    } else {
-      res.status(500).json({
-        message: `Unable to register user. ${err}`,
-      });
-    }
+    res.status(500).json({
+      message: `Unable to register user. ${err}`,
+    });
   }
-});
+};
 
-router.post("/login", async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).send("Email and password are required");
+  }
+
   try {
     const loginUser = await User.findOne({
       where: {
-        email,
+        email: email.toLowerCase(),
       },
     });
 
     if (loginUser && (await bcrypt.compare(password, loginUser.password))) {
-      //create user token
-
       const token = jwt.sign(
-        { id: loginUser.id, email },
+        { id: loginUser.id, email: loginUser.email },
         process.env.JWT_SECRET,
         {
           expiresIn: "2h",
         }
       );
 
-      // save user token
       loginUser.token = token;
 
       res.status(200).json({
@@ -82,17 +88,13 @@ router.post("/login", async (req, res) => {
       });
     }
   } catch (err) {
-    if (!(email && password)) {
-      res.status(400).send("All input is required");
-    }
-    res.status(401).json({
-      message: "Incorrect email or password",
-    });
-
     res.status(500).json({
       message: `Unable to log user in. ${err}`,
     });
   }
-});
+};
 
-module.exports = router;
+router.post("/register", register);
+router.post("/login", login);
+
+module.exports = { router, register, login };
