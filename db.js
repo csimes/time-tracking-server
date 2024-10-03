@@ -1,15 +1,8 @@
 require("dotenv").config();
 const { Sequelize } = require("sequelize");
 
-function getDbConfig(url) {
+function getDbConfig() {
   return {
-    dialect: "postgres",
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false, // This is not recommended for production
-      },
-    },
     logging: console.log, // This will log SQL queries, helpful for debugging
   };
 }
@@ -28,7 +21,15 @@ function createSequelizeInstance() {
     );
   }
 
-  return new Sequelize(dbUrl, getDbConfig(dbUrl));
+  return new Sequelize(dbUrl, {
+    ...getDbConfig(),
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false, // This is not recommended for production
+      },
+    },
+  });
 }
 
 const sequelize = createSequelizeInstance();
@@ -39,6 +40,7 @@ async function testConnection() {
     console.log("Connection has been established successfully.");
   } catch (error) {
     console.error("Unable to connect to the database:", error);
+    throw error; // This will allow calling code to catch and handle the error
   }
 }
 
@@ -51,6 +53,7 @@ async function syncDb(options = {}) {
     console.log("Database synchronized successfully");
   } catch (err) {
     console.error("Failed to synchronize database:", err);
+    throw err; // This will allow calling code to catch and handle the error
   }
 }
 
