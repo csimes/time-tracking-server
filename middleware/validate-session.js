@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../models");
 
 const validateSession = async (req, res, next) => {
+  console.log("Headers:", req.headers); //Check headers coming through
+  console.log("Authorization:", req.headers.authorization); //Check auth header
   if (req.method == "OPTIONS") {
     next();
   } else if (
